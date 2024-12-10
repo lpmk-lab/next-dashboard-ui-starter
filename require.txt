@@ -1,1 +1,2 @@
 recharts for chart
+npm install --save react-big-calendar
