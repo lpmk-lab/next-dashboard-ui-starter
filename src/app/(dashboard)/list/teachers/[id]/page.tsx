@@ -1,5 +1,6 @@
 import Announcements from "@/components/Announcements";
 import BigCalendar from "@/components/BigCalendar";
+import FormModal from "@/components/FormModal";
 import Performance from "@/components/Performance";
 import Image from "next/image";
 import Link from "next/link";
@@ -24,7 +25,30 @@ function SingleTeacherPage() {
               />
             </div>
             <div className="w-2/3 flex-col justify-between gap-4">
-              <h1 className="text-xl font-semibold">La Pyae Min Khant </h1>
+              <div className="flex items-center gap-4">
+                <h1 className="text-xl font-semibold">La Pyae Min Khant </h1>
+                <FormModal
+                  table="teacher"
+                  type="update"
+                  data={{
+                    id: 1,
+                    teacherId: "1234567890",
+                    name: "John Doe",
+                    email: "john@doe.com",
+                    img: "https://images.pexels.com/photos/2888150/pexels-photo-2888150.jpeg?auto=compress&cs=tinysrgb&w=1200",
+                    phone: "1234567890",
+                    subjects: ["Math", "Geometry"],
+                    classes: ["1B", "2A", "3C"],
+                    address: "123 Main St, Anytown, USA",
+                    bloodType: "A",
+                    username: "LPMK",
+                    password: "LPMK",
+                    firstname: "La Pyae",
+                    lastName: "Min Khant",
+                    birthday: "2000-10-01",
+                  }}
+                />
+              </div>
               <p className="text-sm text-gray-500">
                 the main body of a book or other piece of writing, as distinct
               </p>
