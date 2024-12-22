@@ -122,8 +122,11 @@ function SingleStudentPage() {
             <Link className="p-3 rounded-md bg-lamaSkyLight" href="">
               Student&apos;s Classes
             </Link>
-            <Link className="p-3 rounded-md bg-lamaPurpleLight" href="">
-              Student&apos;s Students
+            <Link
+              className="p-3 rounded-md bg-lamaPurpleLight"
+              href={"/list/teachers?classId=" + 2}
+            >
+              Student&apos;s Teachers
             </Link>
             <Link className="p-3 rounded-md bg-lamaYellowLight" href="">
               Student&apos;s Exams

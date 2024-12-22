@@ -2,6 +2,7 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import React, { useState } from "react";
+import { string } from "zod";
 // import TeacherForm from "./forms/TeacherForm";
 // import StudentForm from "./forms/StudentForm";
 
@@ -34,7 +35,7 @@ interface FormModalProps {
     | "announcement";
   type: "create" | "update" | "delete";
   data?: any; // Replace with the actual data type
-  id?: number;
+  id?: number | string;
 }
 
 const FormModal: React.FC<FormModalProps> = ({ table, type, data, id }) => {
