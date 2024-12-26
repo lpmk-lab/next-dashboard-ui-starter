@@ -8,7 +8,7 @@ import React from "react";
 function SingleStudentPage() {
   return (
     <div className="flex-1 p-4 flex flex-col gap-4 xl:flex-row">
-      {/* Left */}
+      {/* Lef t */}
       <div className="w-full xl:w-2/3">
         {/* Top */}
         <div className="flex flex-col  lg:flex-row gap-4">
@@ -119,8 +119,11 @@ function SingleStudentPage() {
         <div className="bg-white p-4 rounded-md">
           <h1 className="text-xl font-semibold">Shortcuts</h1>
           <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
-            <Link className="p-3 rounded-md bg-lamaSkyLight" href="">
-              Student&apos;s Classes
+            <Link
+              className="p-3 rounded-md bg-lamaSkyLight"
+              href={"/list/lessons?classId=" + 2}
+            >
+              Student&apos;s Lessons
             </Link>
             <Link
               className="p-3 rounded-md bg-lamaPurpleLight"
