@@ -144,7 +144,7 @@ model Result {
   score Int
 
   assignmentId Int?
-  sssignment   Assignment? @relation(fields: [assignmentId], references: [id])
+  assignment   Assignment? @relation(fields: [assignmentId], references: [id])
 
   examId    Int?
   exam      Exam?    @relation(fields: [examId], references: [id])
