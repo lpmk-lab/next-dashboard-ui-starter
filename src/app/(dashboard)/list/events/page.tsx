@@ -2,12 +2,12 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { eventsData, role } from "@/lib/data";
+
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
+import { CurrentUserId, role } from "@/ulti/sessionUtils";
 import { Class, Event, Prisma } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 type EventList = Event & { class: Class };
 const columns = [
@@ -36,10 +36,14 @@ const columns = [
     className: "hidden md:table-cell",
   },
 
-  {
-    header: "Actions",
-    accessor: "action",
-  },
+  ...(role === "admin"
+    ? [
+        {
+          header: "Actions",
+          accessor: "action",
+        },
+      ]
+    : []),
 ];
 const renderRow = (item: EventList) => (
   <tr
@@ -51,7 +55,7 @@ const renderRow = (item: EventList) => (
         <h3 className="font-semibold">{item.title}</h3>
       </div>
     </td>
-    <td>{item.class.name}</td>
+    <td>{item.class?.name || "-"}</td>
     <td className="hidden md:table-cell">
       {" "}
       {new Intl.DateTimeFormat("en-US").format(item.startTime)}
@@ -74,11 +78,12 @@ const renderRow = (item: EventList) => (
 
     <td>
       <div className="flex items-center gap-2">
-        <Link href={"/list/teachers/" + item.id}>
-          <FormModal table="event" type="update" data={item} />
-        </Link>
         {role === "admin" && (
-          <FormModal table="event" type="delete" id={item.id} />
+          <>
+            <FormModal table="event" type="update" data={item} />
+
+            <FormModal table="event" type="delete" id={item.id} />
+          </>
         )}
       </div>
     </td>
@@ -93,6 +98,7 @@ const EventListPage = async ({
   const p = page ? parseInt(page) : 1;
   // URL PARMS CONDITION
   const query: Prisma.EventWhereInput = {};
+
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
       if (value !== undefined) {
@@ -107,6 +113,22 @@ const EventListPage = async ({
       }
     }
   }
+  // Role Condition
+
+  const roleConditions = {
+    teacher: { lessons: { some: { teacherId: CurrentUserId! } } },
+    student: { students: { some: { id: CurrentUserId! } } },
+    parent: { students: { some: { parentId: CurrentUserId! } } },
+  };
+
+  query.OR = [
+    { classId: null },
+    {
+      class: roleConditions[role as keyof typeof roleConditions] || {},
+    },
+  ];
+
+  console.log(query);
   const [data, count] = await prisma.$transaction([
     prisma.event.findMany({
       where: query,

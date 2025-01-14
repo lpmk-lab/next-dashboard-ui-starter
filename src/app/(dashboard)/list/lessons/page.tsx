@@ -2,9 +2,10 @@ import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role } from "@/lib/data";
+
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
+import { role } from "@/ulti/sessionUtils";
 import { Class, Lesson, Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
 
@@ -27,10 +28,14 @@ const columns = [
     className: "hidden md:table-cell",
   },
 
-  {
-    header: "Actions",
-    accessor: "action",
-  },
+  ...(role === "admin"
+    ? [
+        {
+          header: "Actions",
+          accessor: "action",
+        },
+      ]
+    : []),
 ];
 const renderRow = (item: LessonList) => (
   <tr
@@ -49,9 +54,12 @@ const renderRow = (item: LessonList) => (
 
     <td>
       <div className="flex items-center gap-2">
-        <FormModal table="lesson" type="update" data={item} />
         {role === "admin" && (
-          <FormModal table="lesson" type="delete" id={item.id} />
+          <>
+            <FormModal table="lesson" type="update" data={item} />
+
+            <FormModal table="lesson" type="delete" id={item.id} />
+          </>
         )}
       </div>
     </td>
