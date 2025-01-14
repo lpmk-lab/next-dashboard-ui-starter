@@ -128,7 +128,6 @@ const EventListPage = async ({
     },
   ];
 
-  console.log(query);
   const [data, count] = await prisma.$transaction([
     prisma.event.findMany({
       where: query,

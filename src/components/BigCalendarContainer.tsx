@@ -9,7 +9,6 @@ const BigCalendarContainer = async ({
   type: "teacherId" | "classId";
   id: string | number;
 }) => {
-  console.log(id);
   const dataRes = await prisma.lesson.findMany({
     where: {
       ...(type === "teacherId"
@@ -25,9 +24,7 @@ const BigCalendarContainer = async ({
   }));
 
   const schedule = adjustScheduleToCurrentWeek(data);
-  schedule.map((lesson) => {
-    console.log(lesson.title + lesson.start + lesson.end);
-  });
+
   return (
     <div className="">
       <BigCalendar data={schedule} />

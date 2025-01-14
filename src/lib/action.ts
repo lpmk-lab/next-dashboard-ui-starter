@@ -7,7 +7,6 @@ export const createSubject = async (
   data: Subjectschema
 ) => {
   try {
-    console.log(data);
     await prisma.subject.create({
       data: {
         name: data.name,
@@ -30,7 +29,6 @@ export const updateSubject = async (
   currentState: currentState,
   data: Subjectschema
 ) => {
-  console.log(data);
   try {
     await prisma.subject.update({
       where: {

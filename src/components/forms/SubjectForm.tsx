@@ -79,11 +79,11 @@ const SubjectForm = ({
           hidden
         />
       )}
-      <div className="flex flex-col gap-2 w-full md:w-1/4 ">
-        <label className="text-xs text-gray-500">Teachers</label>
+      <div className="flex flex-col gap-3 w-full md:w-1/4">
+        <label className="text-sm font-medium text-gray-600">Teachers</label>
         <select
           multiple
-          className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+          className="ring-1.5 ring-gray-300 focus:ring-2 focus:ring-blue-500 focus:outline-none p-2 rounded-md text-sm w-full bg-white shadow-sm hover:ring-gray-400 transition"
           {...register("teachers")}
           defaultValue={data?.teachers}
         >
@@ -96,11 +96,12 @@ const SubjectForm = ({
           )}
         </select>
         {errors.teachers?.message && (
-          <p className="text-xs text-red-400">
+          <p className="text-sm text-red-500 mt-1">
             {errors.teachers?.message.toString()}
           </p>
         )}
       </div>
+
       {state.error && (
         <span className="text-red-500">Something went worng!</span>
       )}

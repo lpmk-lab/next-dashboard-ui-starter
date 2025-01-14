@@ -35,7 +35,7 @@ const FormContainer = async ({ table, type, data, id }: FormContainerProps) => {
         break;
     }
   }
-  console.log("relatedData", relatedData);
+
   return (
     <div>
       <FormModal
