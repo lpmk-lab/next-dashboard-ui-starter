@@ -1,6 +1,5 @@
 "use client";
-import { deleteSubject } from "@/lib/action";
-import { sub } from "framer-motion/client";
+import { deleteClass, deleteSubject, deleteTeacher } from "@/lib/action";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -10,8 +9,8 @@ import { toast } from "react-toastify";
 
 const deleteActionMap = {
   subject: deleteSubject,
-  class: deleteSubject,
-  teacher: deleteSubject,
+  class: deleteClass,
+  teacher: deleteTeacher,
   student: deleteSubject,
   exam: deleteSubject,
 
@@ -35,6 +34,9 @@ const StudentForm = dynamic(() => import("./forms/StudentForm"), {
 const StubjectForm = dynamic(() => import("./forms/SubjectForm"), {
   loading: () => <h1>loading...</h1>,
 });
+const ClassForm = dynamic(() => import("./forms/ClassForm"), {
+  loading: () => <h1>loading...</h1>,
+});
 const forms: {
   [key: string]: (
     setOpen: Dispatch<SetStateAction<boolean>>,
@@ -48,7 +50,7 @@ const forms: {
       type={type}
       data={data}
       setOpen={setOpen}
-      // relatedData={relatedData}
+      relatedData={relatedData}
     />
   ),
   student: (setOpen, type, data, relatedData) => (
@@ -61,6 +63,14 @@ const forms: {
   ),
   subject: (setOpen, type, data, relatedData) => (
     <StubjectForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
+  class: (setOpen, type, data, relatedData) => (
+    <ClassForm
       type={type}
       data={data}
       setOpen={setOpen}
