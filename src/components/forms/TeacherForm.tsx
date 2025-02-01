@@ -11,6 +11,7 @@ import { createTeacher, updateTeacher } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { s } from "framer-motion/client";
+import ImageUploader from "../ImageUpload";
 
 const TeacherForm = ({
   type,
@@ -38,38 +39,11 @@ const TeacherForm = ({
       error: false,
     }
   );
-  const [previewImage, setPreviewImage] = useState<string | null>(
-    data?.image || null
-  );
+
   const onSubmit = handleSubmit((data) => {
     formAction(data);
   });
-  const handleImageUpload = async (file: File) => {
-    const formData = new FormData();
-    formData.append("file", file);
 
-    try {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to upload image");
-      }
-
-      const result = await response.json();
-      const imageUrl = result.filePath;
-
-      // Set the image URL in the form data and update the preview
-      setValue("img", imageUrl);
-      setPreviewImage(imageUrl);
-      toast.success("Image uploaded successfully");
-    } catch (error) {
-      console.error("Image upload error:", error);
-      toast.error("Failed to upload image");
-    }
-  };
   const router = useRouter();
 
   useEffect(() => {
@@ -99,7 +73,16 @@ const TeacherForm = ({
           register={register}
           error={errors?.username}
         />
-
+        {data && (
+          <InputField
+            label="Id"
+            name="id"
+            defaultValue={data?.id}
+            register={register}
+            error={errors?.id}
+            hidden
+          />
+        )}
         <InputField
           label="Email"
           name="email"
@@ -158,7 +141,7 @@ const TeacherForm = ({
         <InputField
           label="birthday"
           name="birthday"
-          defaultValue={data?.birthday}
+          defaultValue={data?.birthday.toISOString().split("T")[0]}
           register={register}
           error={errors?.birthday}
           type="date"
@@ -200,55 +183,15 @@ const TeacherForm = ({
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center items-center">
-          <label
-            className={`relative text-xs text-gray-500 flex flex-col items-center gap-2 cursor-pointer ${
-              previewImage ? "text-transparent" : ""
-            }`}
-            htmlFor="img"
-          >
-            {!previewImage && (
-              <span className="bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300 transition">
-                Upload a photo
-              </span>
-            )}
-            <Image
-              src={previewImage || "/upload.png"}
-              alt="Uploaded Preview"
-              width={100}
-              height={100}
-              className={`rounded-md object-cover border-2 ${
-                previewImage ? "border-blue-400" : "border-gray-300"
-              }`}
-            />
-            {previewImage && (
-              <span
-                className="absolute top-0 right-0 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full cursor-pointer"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setPreviewImage(null); // Remove preview image
-                }}
-              >
-                ✕
-              </span>
-            )}
-          </label>
-          <input
-            type="file"
-            id="img"
-            className="hidden"
-            accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) handleImageUpload(file);
-            }}
-          />
-          {errors.img?.message && (
-            <p className="text-xs text-red-400 mt-2">{errors.img.message}</p>
-          )}
-        </div>
+        <ImageUploader
+          onImageUpload={(imageUrl) => setValue("img", imageUrl)}
+          defaultImage={data?.image} // Set default image if available
+          error={errors.img?.message}
+        />
       </div>
-
+      {state.error && (
+        <span className="text-red-500">Something went worng!</span>
+      )}
       <button className="bg-blue-400 text-white p-2 rounded-md">
         {type === "create" ? "Create" : "Update"}
       </button>

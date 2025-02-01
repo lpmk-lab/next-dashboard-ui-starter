@@ -113,7 +113,7 @@ const FormModal: React.FC<FormModalProps> = ({
       ? "bg-lamaSky"
       : "bg-lamaPurple";
   const [open, setOpen] = useState(false);
-
+  console.log("FormContainer data:", data);
   const Form = () => {
     const [state, formAction] = useFormState(deleteActionMap[table], {
       success: false,
@@ -123,7 +123,12 @@ const FormModal: React.FC<FormModalProps> = ({
 
     useEffect(() => {
       if (state.success) {
-        toast(`Subject has been deleted!`);
+        if (table == "subject") {
+          toast(`Subject has been deleted!`);
+        } else if (table == "teacher") {
+          toast(`Teacher has been deleted!`);
+        }
+
         setOpen(false);
         router.refresh();
       }

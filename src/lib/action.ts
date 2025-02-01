@@ -1,4 +1,6 @@
 "use server";
+
+import { clerkClient } from "@clerk/nextjs/server";
 import {
   ClassSchema,
   SubjectSchema,
@@ -144,9 +146,19 @@ export const createTeacher = async (
   data: TeacherSchema
 ) => {
   try {
-    await prisma.teacher.create({
+    const client = await clerkClient();
+
+    const user = await client.users.createUser({
+      username: data.name,
+      firstName: data.name,
+      lastName: data.surname,
+      password: data.password,
+      publicMetadata: { role: "teacher" },
+    });
+    console.log(user);
+    const teacher = await prisma.teacher.create({
       data: {
-        id: uuidv4(), // Generate a unique ID
+        id: user.id, // Generate a unique ID
         username: data.username,
         name: data.name,
         surname: data.surname,
@@ -157,8 +169,14 @@ export const createTeacher = async (
         bloodType: data.bloodType,
         sex: data.sex,
         birthday: data.birthday,
+        subjects: {
+          connect: data.subjects?.map((subjectId: string) => ({
+            id: parseInt(subjectId),
+          })),
+        },
       },
     });
+    console.log(teacher);
     return { success: true, error: false };
   } catch (error) {
     console.error("Error creating teacher:", error);
@@ -170,12 +188,25 @@ export const updateTeacher = async (
   currentState: currentState,
   data: TeacherSchema
 ) => {
+  const client = await clerkClient();
   try {
-    await prisma.teacher.update({
+    if (!data.id) {
+      return { success: false, error: true };
+    }
+    const user = await client.users.updateUser(data.id, {
+      username: data.name,
+      firstName: data.name,
+      lastName: data.surname,
+      ...(data.password !== "" && { password: data.password }),
+      publicMetadata: { role: "teacher" },
+    });
+
+    const teacher = await prisma.teacher.update({
       where: {
         id: data.id,
       },
       data: {
+        ...(data.password !== "" && { password: data.password }),
         username: data.username,
         name: data.name,
         surname: data.surname,
@@ -186,6 +217,11 @@ export const updateTeacher = async (
         bloodType: data.bloodType,
         sex: data.sex,
         birthday: data.birthday,
+        subjects: {
+          set: data.subjects?.map((subjectId: string) => ({
+            id: parseInt(subjectId),
+          })),
+        },
       },
     });
     // revalidatePath("/list/classes");
