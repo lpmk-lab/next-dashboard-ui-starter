@@ -185,8 +185,9 @@ const TeacherForm = ({
         </div>
         <ImageUploader
           onImageUpload={(imageUrl) => setValue("img", imageUrl)}
-          defaultImage={data?.image} // Set default image if available
+          defaultImage={data?.img} // Set default image if available
           error={errors.img?.message}
+          attributeName="img"
         />
       </div>
       {state.error && (

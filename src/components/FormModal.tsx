@@ -1,5 +1,10 @@
 "use client";
-import { deleteClass, deleteSubject, deleteTeacher } from "@/lib/action";
+import {
+  deleteClass,
+  deleteMenu,
+  deleteSubject,
+  deleteTeacher,
+} from "@/lib/action";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -21,6 +26,7 @@ const deleteActionMap = {
   attendance: deleteSubject,
   event: deleteSubject,
   announcement: deleteSubject,
+  menu: deleteMenu,
 };
 
 const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
@@ -35,6 +41,9 @@ const StubjectForm = dynamic(() => import("./forms/SubjectForm"), {
   loading: () => <h1>loading...</h1>,
 });
 const ClassForm = dynamic(() => import("./forms/ClassForm"), {
+  loading: () => <h1>loading...</h1>,
+});
+const MenuForm = dynamic(() => import("./forms/MenuForm"), {
   loading: () => <h1>loading...</h1>,
 });
 const forms: {
@@ -77,6 +86,14 @@ const forms: {
       relatedData={relatedData}
     />
   ),
+  menu: (setOpen, type, data, relatedData) => (
+    <MenuForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
 };
 interface FormModalProps {
   table:
@@ -91,7 +108,8 @@ interface FormModalProps {
     | "result"
     | "attendance"
     | "event"
-    | "announcement";
+    | "announcement"
+    | "menu";
   type: "create" | "update" | "delete";
   data?: any; // Replace with the actual data type
   id?: number | string;
@@ -113,7 +131,7 @@ const FormModal: React.FC<FormModalProps> = ({
       ? "bg-lamaSky"
       : "bg-lamaPurple";
   const [open, setOpen] = useState(false);
-  console.log("FormContainer data:", data);
+
   const Form = () => {
     const [state, formAction] = useFormState(deleteActionMap[table], {
       success: false,
@@ -127,6 +145,8 @@ const FormModal: React.FC<FormModalProps> = ({
           toast(`Subject has been deleted!`);
         } else if (table == "teacher") {
           toast(`Teacher has been deleted!`);
+        } else if (table == "menu") {
+          toast(`Menu has been deleted!`);
         }
 
         setOpen(false);

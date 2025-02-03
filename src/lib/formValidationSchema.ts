@@ -46,3 +46,21 @@ export const teacherSchema = z.object({
 });
 
 export type TeacherSchema = z.infer<typeof teacherSchema>;
+
+export const menuSchema = z.object({
+  id: z.string().optional(),
+  title: z
+    .string()
+    .min(3, { message: "Title must be at least 3 character long!" })
+    .max(20, { message: "Title must be at most 20 character long!" }),
+  label: z
+    .string()
+    .min(3, { message: "Lable must be at least 3 character long!" })
+    .max(20, { message: "Lable must be at most 20 character long!" }),
+  icon: z.string().optional(),
+  href: z.string().min(1, { message: "Href is required!" }),
+  category: z.string().min(1, { message: "Category is required!" }),
+  visible: z.array(z.string()).optional(),
+});
+
+export type MenuSchema = z.infer<typeof menuSchema>;

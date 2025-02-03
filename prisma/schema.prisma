@@ -185,6 +185,16 @@ enum UserSex {
   FEMALE
 }
 
+model MenuItem {
+  id       String   @id @default(uuid())
+  title    String
+  icon     String
+  label    String
+  href     String
+  visible  String[]
+  category String
+}
+
 enum Day {
   MONDAY
   TUESDAY

@@ -6,12 +6,14 @@ interface ImageUploaderProps {
   onImageUpload: (imageUrl: string) => void;
   defaultImage?: string | null;
   error?: string;
+  attributeName: string;
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
   onImageUpload,
   defaultImage,
   error,
+  attributeName,
 }) => {
   const [previewImage, setPreviewImage] = useState<string | null>(
     defaultImage || null
@@ -43,14 +45,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       toast.error("Failed to upload image");
     }
   };
-
+  console.log("ImageUploader" + previewImage);
   return (
     <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center items-center">
       <label
         className={`relative text-xs text-gray-500 flex flex-col items-center gap-2 cursor-pointer ${
           previewImage ? "text-transparent" : ""
         }`}
-        htmlFor="img"
+        htmlFor={attributeName}
       >
         {!previewImage && (
           <span className="bg-gray-200 px-4 py-2 rounded-md hover:bg-gray-300 transition">
@@ -81,7 +83,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       </label>
       <input
         type="file"
-        id="img"
+        id={attributeName}
         className="hidden"
         accept="image/*"
         onChange={(e) => {

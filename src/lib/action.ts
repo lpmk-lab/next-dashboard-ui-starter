@@ -3,6 +3,7 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import {
   ClassSchema,
+  MenuSchema,
   SubjectSchema,
   TeacherSchema,
 } from "./formValidationSchema";
@@ -239,6 +240,79 @@ export const deleteTeacher = async (
   const id = data.get("id") as string;
   try {
     await prisma.teacher.delete({
+      where: {
+        id: id,
+      },
+    });
+    // revalidatePath("/list/subjects");
+    return { success: true, error: false };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error: true };
+  }
+};
+
+export const createMenu = async (
+  currentState: currentState,
+  data: MenuSchema
+) => {
+  try {
+    await prisma.menuItem.create({
+      data: {
+        title: data.title,
+        icon: data.icon,
+        href: data.href,
+        category: data.category,
+        label: data.label,
+        visible: {
+          set: data.visible,
+        },
+      },
+    });
+    // revalidatePath("/list/classes");
+    return { success: true, error: false };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error: true };
+  }
+};
+
+export const updateMenu = async (
+  currentState: currentState,
+  data: MenuSchema
+) => {
+  try {
+    console.log(data);
+    await prisma.menuItem.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        title: data.title,
+        icon: data.icon,
+        href: data.href,
+        category: data.category,
+        label: data.label,
+        visible: {
+          set: data.visible,
+        },
+      },
+    });
+    // revalidatePath("/list/classes");
+    return { success: true, error: false };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error: true };
+  }
+};
+
+export const deleteMenu = async (
+  currentState: currentState,
+  data: FormData
+) => {
+  const id = data.get("id") as string;
+  try {
+    await prisma.menuItem.delete({
       where: {
         id: id,
       },
