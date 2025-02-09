@@ -3,6 +3,7 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import {
   ClassSchema,
+  loginSchema,
   MenuSchema,
   SubjectSchema,
   TeacherSchema,
@@ -10,6 +11,8 @@ import {
 import prisma from "./prisma";
 type currentState = { success: boolean; error: boolean };
 import { v4 as uuidv4 } from "uuid";
+import { createSession } from "./Session";
+import { redirect } from "next/navigation";
 export const createSubject = async (
   currentState: currentState,
   data: SubjectSchema
@@ -322,5 +325,68 @@ export const deleteMenu = async (
   } catch (error) {
     console.log(error);
     return { success: false, error: true };
+  }
+};
+const testUser = {
+  id: "1",
+  email: "lapyaeminkhant.sbs@gamil.com",
+  password: "123456",
+  role: "admin",
+};
+// export const loging = async (formData: FormData) => {
+//   try {
+//     // Validate form data using the schema
+//     const result = loginSchema.safeParse(Object.fromEntries(formData));
+//     if (!result.success) {
+//       // If validation fails, return the field errors
+//       return {
+//         success: false,
+//         error: true,
+//       };
+//     }
+
+//     // Extract email and password from validated data
+//     const { email, password } = result.data;
+
+//     // Check if the email and password match the test user credentials
+//     if (email !== testUser.email || password !== testUser.password) {
+//       return {
+//         errors: {
+//           email: ["Invalid email or password"],
+//         },
+//       };
+//     }
+
+//     // Create a session for the user
+//     await createSession(testUser.id, testUser.role);
+//     return {
+//       success: true,
+//       error: false,
+//     };
+//   } catch (error) {
+//     // Handle unexpected errors
+//     return {
+//       success: false,
+//       error: true,
+//     };
+//   }
+// };
+export const login = async (currentState: currentState, data: FormData) => {
+  try {
+    const email = data.get("email") as string;
+    console.log(email);
+    const password = data.get("password") as string;
+    if (email !== testUser.email || password !== testUser.password) {
+      return {
+        success: false,
+        error: true,
+        message: "Invalid email or password",
+      };
+    }
+    await createSession(testUser.id, testUser.role);
+    return { success: true, error: false };
+  } catch (error) {
+    console.log(error);
+    return { success: false, error: true, message: error };
   }
 };
